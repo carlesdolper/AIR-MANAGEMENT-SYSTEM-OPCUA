@@ -13,7 +13,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 # Función para obtener las variables disponibles en la base de datos
 def obtener_variables():
     try:
-        conn = sqlite3.connect('data/datos_opcua.db')  # Ruta a tu base de datos
+        conn = sqlite3.connect('datos_opcua.db')  # Ruta a tu base de datos
         query = "SELECT DISTINCT nombre FROM tags"
         df = pd.read_sql_query(query, conn)
         conn.close()
@@ -25,7 +25,7 @@ def obtener_variables():
 # Función para obtener los datos de una variable específica dentro de un rango de fechas y horas
 def obtener_datos(variable, fecha_inicio=None, fecha_fin=None, limite=100):
     try:
-        conn = sqlite3.connect('data/datos_opcua.db')
+        conn = sqlite3.connect('datos_opcua.db')
         query = """
             SELECT 
                 fecha_hora,

@@ -7,10 +7,10 @@ from pathlib import Path
 class Analyzer:
     def __init__(self):
         # Usar Path para manejar rutas de manera segura
-        self.db_path = Path(__file__).parent / 'data' / 'datos_opcua.db'
+        self.db_path = Path(__file__).parent / 'datos_opcua.db'
         
         # Asegurarse de que el directorio data existe
-        data_dir = Path(__file__).parent / 'data'
+        data_dir = Path(__file__).parent
         data_dir.mkdir(exist_ok=True)
         
         # Verificar si la base de datos existe

@@ -8,7 +8,7 @@ import csv
 from pathlib import Path
 
 # Crear un subdirectorio llamado "data"
-data_dir = Path(__file__).parent / 'data'
+data_dir = Path(__file__).parent
 data_dir.mkdir(exist_ok=True)
 
 # Rutas para la base de datos y csv

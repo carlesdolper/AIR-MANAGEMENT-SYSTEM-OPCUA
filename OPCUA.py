@@ -6,17 +6,18 @@ import sqlite3
 from datetime import datetime
 import csv
 from pathlib import Path
+from config import DB_PATH, CSV_PATH, OPC_UA_CONFIG, SAMPLING_TIME, PUBLISHING_TIME
 
 # Crear un subdirectorio llamado "data"
 data_dir = Path(__file__).parent
 data_dir.mkdir(exist_ok=True)
 
 # Rutas para la base de datos y csv
-db_path = data_dir / 'datos_opcua.db'
-csv_path = data_dir / 'opcua_data.csv'
+#db_path = DB_PATH
+#csv_path = CSV_PATH
 
 # Conectar a la base de datos (se creará si no existe)
-conn = sqlite3.connect(str(db_path))
+conn = sqlite3.connect(DB_PATH)
 
 # Crear un cursor
 cursor = conn.cursor()
@@ -41,8 +42,6 @@ CREATE INDEX IF NOT EXISTS idx_tags_fecha ON tags(fecha_hora)
 conn.commit()
 conn.close()
 
-url = "opc.tcp://172.19.89.154:4840"
-
 def conectar_servidor_opcua(url, nombre_usuario, contrasena):
     cliente = Client(url)
     try:
@@ -54,10 +53,6 @@ def conectar_servidor_opcua(url, nombre_usuario, contrasena):
     except Exception as e:
         print(f"Error al conectar al servidor OPC UA: {e}")
         return None
-
-# Constantes de tiempo en segundos
-SAMPLING_TIME = 0.3  # 300ms para muestreo
-PUBLISHING_TIME = 0.5  # 500ms para publicación
 
 def leer_tags_opcua(cliente, tags):
     try:
@@ -84,7 +79,7 @@ def leer_tags_opcua(cliente, tags):
 def insertar_datos(datos_tags):
     try:
         # Conectar a la base de datos
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
         # Insertar los datos en la tabla
@@ -101,12 +96,12 @@ def insertar_datos(datos_tags):
         print(f"Error al insertar datos en la base de datos: {e}")
 
 # Conectar al servidor OPC UA
-cliente = conectar_servidor_opcua(url, "admin", "admin")
+cliente = conectar_servidor_opcua(OPC_UA_CONFIG['url'], OPC_UA_CONFIG['username'], OPC_UA_CONFIG['password'])
 
 if cliente:
     try:
         #Create CSV file and write header
-        with open(csv_path, 'w', newline='') as csvfile:
+        with open(CSV_PATH, 'w', newline='') as csvfile:
             fieldnames =['Timestamp'] + [tag.tag_name for tag in tag_list]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
@@ -136,7 +131,7 @@ if cliente:
                 print(f"Error en el ciclo principal: {e}")
 
             # Escribir al archivo CSV (una fila por lectura)
-            with open(csv_path, 'a', newline='') as csvfile:
+            with open(CSV_PATH, 'a', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=row_csv.keys())
                 writer.writerow(row_csv)
 

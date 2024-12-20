@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
+from config import DB_PATH, DASH_CONFIG
 
 # Crear la aplicación Dash con Bootstrap
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -13,7 +14,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 # Función para obtener las variables disponibles en la base de datos
 def obtener_variables():
     try:
-        conn = sqlite3.connect('datos_opcua.db')  # Ruta a tu base de datos
+        conn = sqlite3.connect(DB_PATH)  # Ruta a tu base de datos
         query = "SELECT DISTINCT nombre FROM tags"
         df = pd.read_sql_query(query, conn)
         conn.close()
@@ -25,7 +26,7 @@ def obtener_variables():
 # Función para obtener los datos de una variable específica dentro de un rango de fechas y horas
 def obtener_datos(variable, fecha_inicio=None, fecha_fin=None, limite=100):
     try:
-        conn = sqlite3.connect('datos_opcua.db')
+        conn = sqlite3.connect(DB_PATH)
         query = """
             SELECT 
                 fecha_hora,
@@ -93,7 +94,7 @@ app.layout = dbc.Container([
         dbc.Col(dbc.Button("Pausar Actualización", id="boton-pausa", color="danger", className="mt-4"), width=12)
     ]),
     
-    dcc.Interval(id='intervalo-actualizacion', interval=2500, n_intervals=0)  # Actualización cada 2 segundos
+    dcc.Interval(id='intervalo-actualizacion', interval=DASH_CONFIG['update_interval'], n_intervals=0)  # Actualización cada 2 segundos
 ], fluid=True)
 
 # Callback para actualizar el gráfico lineal basado en la selección del dropdown y el rango de fechas/horas

@@ -3,24 +3,18 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
+from config import DB_PATH
 
 class Analyzer:
     def __init__(self):
-        # Usar Path para manejar rutas de manera segura
-        self.db_path = Path(__file__).parent / 'datos_opcua.db'
-        
-        # Asegurarse de que el directorio data existe
-        data_dir = Path(__file__).parent
-        data_dir.mkdir(exist_ok=True)
-        
         # Verificar si la base de datos existe
-        if not self.db_path.exists():
+        if not DB_PATH.exists():
             print(f"Error: Base de datos no encontrada en {self.db_path}")
             return
 
     def get_data(self, variable, limit=2000):
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3.connect(DB_PATH)
             query = """
                 SELECT 
                     datetime(fecha_hora) as fecha_hora,
@@ -210,7 +204,7 @@ if __name__ == "__main__":
         "AMS00_ITV_Value"
     ]
     
-    for var in variables:
-        analyzer.detect_anomalies(var)
+"""     for var in variables:
+        analyzer.detect_anomalies(var) """
 
 

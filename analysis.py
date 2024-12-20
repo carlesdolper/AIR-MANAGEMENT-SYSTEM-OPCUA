@@ -4,7 +4,6 @@ import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
 
-#tewst
 class Analyzer:
     def __init__(self):
         # Usar Path para manejar rutas de manera segura
